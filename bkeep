@@ -10,6 +10,11 @@ bprompt() { \
 
 add_book() { \
 	[ ! -f "$outfile" ] && touch "$outfile"
+	
+	if [ ! -z "$1" ] && [ ! -z "$2" ] && [ ! -z "$3" ] && [ ! -z "$4" ] && [ ! -z "$5" ]; then
+		printf "$1\t$2\t$3\t$4\t$5\n" >> "$outfile"
+		return
+	fi
 
 	bprompt "Enter the title of the book\n"
 	TITLE="$input"
@@ -28,7 +33,7 @@ add_book() { \
 		bprompt "Do you want to edit any of this? (y/n)\n"
 		editing="$input"
 		([ "$editing" = 'y' ] || [ "$editing" = 'Y' ]) && input=$(bprompt "Edit what?\nTitle: t\nAuthor: a\n Description: d\nISBN: i\nTags: g\n")
-		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && printf "$ISBN\t$TITLE\t$AUTHOR\t$DESCRIPTION\t$TAGS\n" >> "$outfile" && return
+		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && printf "$TITLE\t$AUTHOR\t$DESCRIPTION\t$ISBN\t$TAGS\n" >> "$outfile" && return
 
 		([ "$input" = 't' ] || [ "$input" = 'T' ]) && bprompt "Enter the title of the book\n" && TITLE="$input"
 		([ "$input" = 'a' ] || [ "$input" = 'A' ]) && bprompt "Enter the author of the book\n" && AUTHOR="$input"
@@ -39,7 +44,20 @@ add_book() { \
 }
 
 cite_book() { \
-	echo "Citing is unsupported"
+	editing='y'
+	while [ "$editing" = 'y' ] || [ "$editing" = 'Y' ]; do
+		printf "Title: $TITLE\nAuthor: $AUTHOR\nDescription: $DESCRIPTION\nISBN: $ISBN\nTags: $TAGS\n"
+		bprompt "Do you want to edit any of this? (y/n)\n"
+		editing="$input"
+		([ "$editing" = 'y' ] || [ "$editing" = 'Y' ]) && input=$(bprompt "Edit what?\nTitle: t\nAuthor: a\n Description: d\nISBN: i\nTags: g\n")
+		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && printf "$TITLE\t$AUTHOR\t$DESCRIPTION\t$ISBN\t$TAGS\n" >> "$outfile" && return
+
+		([ "$input" = 't' ] || [ "$input" = 'T' ]) && bprompt "Enter the title of the book\n" && TITLE="$input"
+		([ "$input" = 'a' ] || [ "$input" = 'A' ]) && bprompt "Enter the author of the book\n" && AUTHOR="$input"
+		([ "$input" = 'd' ] || [ "$input" = 'd' ]) && bprompt "Enter a short description of the book\n" && DESCRIPTION="$input"
+		([ "$input" = 'i' ] || [ "$input" = 'i' ]) && bprompt "Enter the ISBN of the book\n" && ISBN="$input"
+		([ "$input" = 'g' ] || [ "$input" = 'g' ]) && bprompt "Enter comma-separated tags for the book\n" && TAGS="$input"
+	done
 }
 
 edit_book() { \
@@ -47,36 +65,68 @@ edit_book() { \
 }
 
 grep_book() { \
-	echo "Grepping is unsupported"
+	if [ -z "$1" ]; then
+		bprompt "Grep for what?\n"
+		grepstr="$input"
+	else
+		grepstr="$1"
+	fi
+
+	bookline="$(awk -F "\t" '{OFS="\n"; print $5}' "$outfile" | tr "," "\n" | grep -inx "$grepstr" | cut -d ':' -f 1)"
+	echo "book $bookline"
+	[ ! -z "$bookline" ] && print_book "$(sed -n "$bookline"p "$outfile")"
+	
 }
 
 list_books() { \
 	IFS=$'\n'
+	num='1'
 	for book in $(cat "$outfile"); do
-		echo "Title: $(echo "$book" | awk -F '\t' '{print $2}')"
-		echo "Author(s): $(echo "$book" | awk -F '\t' '{print $3}')"
-		echo "Description: $(echo "$book" | awk -F '\t' '{print $4}')"
-		echo "ISBN: $(echo "$book" | awk -F '\t' '{print $1}')"
-		echo "Tags: $(echo "$book" | awk -F '\t' '{print $5}')"
+		print_book "$book" $num
+		num="$(echo "$num+1" | bc)"
 		printf "\n\n"
 	done
 	IFS=' '
 }
 
+print_book() { \
+	echo "ID: $2"
+	echo "Title: $(echo "$1" | awk -F '\t' '{print $1}')"
+	echo "Author(s): $(echo "$1" | awk -F '\t' '{print $2}')"
+	echo "Description: $(echo "$1" | awk -F '\t' '{print $3}')"
+	echo "ISBN: $(echo "$1" | awk -F '\t' '{print $4}')"
+	echo "Tags: $(echo "$1" | awk -F '\t' '{print $5}')"
+}
+
 rm_book() { \
-	echo "Removing is unsupported"
+	if [ -z "$1" ]; then
+		bprompt "Remove what book? (enter ID)\n"
+		booknum="$input"
+	else
+		booknum="$1"
+	fi
+	sed -i "$booknum"d "$outfile"
 }
 
 if [ -z "$1" ]; then
-	res="$(bprompt "What do you want to do?\nAdd a book: a\nCite a book: c\nEdit a book: e\nGrep a book: g\nList books: l\nRemove a book: r\n")"
-else
-	case $1 in
+	bprompt "What do you want to do?\nAdd a book: a\nCite a book: c\nEdit a book: e\nGrep a book: g\nList books: l\nRemove a book: r\n"
+	case $input in 
 		'a') add_book ;;
 		'c') cite_book ;;
 		'e') edit_book ;;
-		'l') list_books ;;
 		'g') grep_book ;;
+		'l') list_books ;;
 		'r') rm_book ;;
+		*) echo "Unknown command" && exit 1
+	esac
+else
+	case $1 in
+		'a') add_book "$2" "$3" "$4" "$5" "$6" ;;
+		'c') cite_book "$2" "$3" ;;
+		'e') edit_book "$2" ;;
+		'g') grep_book "$2" ;;
+		'l') list_books ;;
+		'r') rm_book $2 ;;
 		*) echo "Unknown command" && exit 1
 	esac
 fi
