@@ -29,7 +29,7 @@ add_book() { \
 
 	editing='y'
 	while [ "$editing" = 'y' ] || [ "$editing" = 'Y' ]; do
-		printf "Title: $TITLE\nAuthor: $AUTHOR\nDescription: $DESCRIPTION\nISBN: $ISBN\nTags: $TAGS\n"
+		printf "\n\nTitle: $TITLE\nAuthor: $AUTHOR\nDescription: $DESCRIPTION\nISBN: $ISBN\nTags: $TAGS\n"
 		bprompt "Do you want to edit any of this? (y/n)\n"
 		editing="$input"
 		if [ "$editing" = 'y' ] || [ "$editing" = 'Y' ]; then 
@@ -41,29 +41,42 @@ add_book() { \
 			([ "$input" = 'g' ] || [ "$input" = 'g' ]) && bprompt "Enter comma-separated tags for the book\n" && TAGS="$input"
 		fi
 		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && printf "$TITLE\t$AUTHOR\t$DESCRIPTION\t$ISBN\t$TAGS\n" >> "$outfile" && return
-
 	done
 }
 
 cite_book() { \
-	editing='y'
-	while [ "$editing" = 'y' ] || [ "$editing" = 'Y' ]; do
-		printf "Title: $TITLE\nAuthor: $AUTHOR\nDescription: $DESCRIPTION\nISBN: $ISBN\nTags: $TAGS\n"
-		bprompt "Do you want to edit any of this? (y/n)\n"
-		editing="$input"
-		([ "$editing" = 'y' ] || [ "$editing" = 'Y' ]) && input=$(bprompt "Edit what?\nTitle: t\nAuthor: a\n Description: d\nISBN: i\nTags: g\n")
-		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && printf "$TITLE\t$AUTHOR\t$DESCRIPTION\t$ISBN\t$TAGS\n" >> "$outfile" && return
-
-		([ "$input" = 't' ] || [ "$input" = 'T' ]) && bprompt "Enter the title of the book\n" && TITLE="$input"
-		([ "$input" = 'a' ] || [ "$input" = 'A' ]) && bprompt "Enter the author of the book\n" && AUTHOR="$input"
-		([ "$input" = 'd' ] || [ "$input" = 'd' ]) && bprompt "Enter a short description of the book\n" && DESCRIPTION="$input"
-		([ "$input" = 'i' ] || [ "$input" = 'i' ]) && bprompt "Enter the ISBN of the book\n" && ISBN="$input"
-		([ "$input" = 'g' ] || [ "$input" = 'g' ]) && bprompt "Enter comma-separated tags for the book\n" && TAGS="$input"
-	done
+	echo "Citing is unsupported"
 }
 
 edit_book() { \
-	echo "Editing is unsupported"
+	if [ -z "$1" ]; then
+		bprompt "Edit which book? (Enter the ID)\n"
+		ID="$input"
+	else
+		ID="$1"
+	fi
+
+	TITLE="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $1}')"
+	AUTHOR="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $2}')"
+	DESCRIPTION="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $3}')"
+	ISBN="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $4}')"
+	TAGS="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $5}')"
+
+	editing='y'
+	while [ "$editing" = 'y' ] || [ "$editing" = 'Y' ]; do
+		printf "\n\nTitle: $TITLE\nAuthor: $AUTHOR\nDescription: $DESCRIPTION\nISBN: $ISBN\nTags: $TAGS\n\n\n"
+		bprompt "Do you still want to edit any of this? (y/n)\n"
+		editing="$input"
+		if [ "$editing" = 'y' ] || [ "$editing" = 'Y' ]; then 
+			bprompt "Edit what?\nTitle: t\nAuthor: a\n Description: d\nISBN: i\nTags: g\n"
+			([ "$input" = 't' ] || [ "$input" = 'T' ]) && bprompt "Enter the title of the book\n" && TITLE="$input"
+			([ "$input" = 'a' ] || [ "$input" = 'A' ]) && bprompt "Enter the author of the book\n" && AUTHOR="$input"
+			([ "$input" = 'd' ] || [ "$input" = 'd' ]) && bprompt "Enter a short description of the book\n" && DESCRIPTION="$input"
+			([ "$input" = 'i' ] || [ "$input" = 'i' ]) && bprompt "Enter the ISBN of the book\n" && ISBN="$input"
+			([ "$input" = 'g' ] || [ "$input" = 'g' ]) && bprompt "Enter comma-separated tags for the book\n" && TAGS="$input"
+		fi
+		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && sed -i "$ID c \ $TITLE\t$AUTHOR\t$DESCRIPTION\t$ISBN\t$TAGS" "$outfile" && return
+	done
 }
 
 grep_book() { \
