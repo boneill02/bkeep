@@ -73,7 +73,6 @@ grep_book() { \
 	fi
 
 	bookline="$(awk -F "\t" '{OFS="\n"; print $5}' "$outfile" | tr "," "\n" | grep -inx "$grepstr" | cut -d ':' -f 1)"
-	echo "book $bookline"
 	[ ! -z "$bookline" ] && print_book "$(sed -n "$bookline"p "$outfile")"
 	
 }
