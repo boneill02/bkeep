@@ -20,7 +20,7 @@ install:
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
 	cp -f bkeep $(DESTDIR)$(PREFIX)/bin
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/bkeep
-	mkdir $(DESTDIR)$(MANPREFIX)/man1
+	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
 	sed "s/VERSION/$(VERSION)/g" < bkeep.1 > $(DESTDIR)$(MANPREFIX)/man1/bkeep.1
 	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/bkeep.1
 
