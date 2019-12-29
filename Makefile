@@ -1,4 +1,4 @@
-.POSIX
+.POSIX:
 
 include config.mk
 
@@ -27,4 +27,4 @@ install:
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/bkeep $(DESTDIR)$(MANPREFIX)/man1/bkeep.1
 
-.PHONY clean dist install uninstall
+.PHONY: clean dist install uninstall
