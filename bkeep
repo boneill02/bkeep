@@ -54,6 +54,16 @@ edit_book() { \
 		ID="$input"
 	else
 		ID="$1"
+		if [ ! -z "$2" ] && [ ! -z "$3" ]; then
+			    echo "boom"
+			FIELD="$2"
+			VALUE="$3"
+			case "$FIELD" in
+				"Title") sed -i "$ID s/.*\t/$VALUE\t/" "$outfile" ;;
+				"Author") sed -i "$ID s/\t.*\t/\t$VALUE\t/" "$outfile" ;;
+			esac
+			return
+		fi
 	fi
 
 	TITLE="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $1}')"
@@ -86,7 +96,6 @@ grep_book() { \
 	else
 		grepstr="$1"
 	fi
-
 	bookline="$(awk -F "\t" '{OFS="\n"; print $5}' "$outfile" | grep -inw "$grepstr" | cut -d ':' -f 1)"
 	[ ! -z "$bookline" ] && print_book "$(sed -n "$bookline"p "$outfile")" "$bookline"
 	
@@ -137,7 +146,7 @@ else
 	case $1 in
 		'a') add_book "$2" "$3" "$4" "$5" "$6" ;;
 		'c') cite_book "$2" "$3" ;;
-		'e') edit_book "$2" ;;
+		'e') edit_book "$2" "$3" "$4" ;;
 		'g') grep_book "$2" ;;
 		'l') list_books ;;
 		'r') rm_book $2 ;;

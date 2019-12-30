@@ -1,17 +1,55 @@
 #!/bin/sh
 
-add() { \
-    TITLE="$(dialog --title "bkeep" --inputbox "Please enter the title of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
-    AUTHOR="$(dialog --title "bkeep" --inputbox "Please enter the author of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
-    DESCRIPTION="$(dialog --title "bkeep" --inputbox "Please enter a short description of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
-    ISBN="$(dialog --title "bkeep" --inputbox "Please enter the ISBN of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
-    TAGS="$(dialog --title "bkeep" --inputbox "Please enter some comma-separated tags for the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
-    bkeep a "$TITLE" "$AUTHOR" "$DESCRIPTION" "$ISBN" "$TAGS"
+add_entry() { \
+	TITLE="$(dialog --title "bkeep" --inputbox "Please enter the title of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
+	AUTHOR="$(dialog --title "bkeep" --inputbox "Please enter the author of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
+	DESCRIPTION="$(dialog --title "bkeep" --inputbox "Please enter a short description of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
+	ISBN="$(dialog --title "bkeep" --inputbox "Please enter the ISBN of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
+	TAGS="$(dialog --title "bkeep" --inputbox "Please enter some comma-separated tags for the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
+	bkeep a "$TITLE" "$AUTHOR" "$DESCRIPTION" "$ISBN" "$TAGS"
+}
+
+cite_entry() { \
+	clear
+	echo "Unimplemented"
+}
+
+edit_entry() { \
+	ID="$(dialog --title "bkeep" --inputbox "Please enter the ID of the book to edit." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
+	editing="yes"
+	while [ $editing = "yes" ]; do
+		FIELD="$(dialog --title "bkeep" --menu "What do you want to edit?" 10 70 2 Title "" Author "" Description "" ISBN "" Tags "" 3>&1 1>&2 2>&3 3>&1)" || exit
+		case "$FIELD" in
+			"Title") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new title for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
+			"Author") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new author for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
+		esac
+		bkeep e "$ID" "$FIELD" "$VALUE"
+	done
+}
+
+grep_entry() { \
+	clear
+	echo "Unimplemented"
+}
+
+list_entries() { \
+	clear
+	echo "Unimplemented"
+}
+
+rm_entry() { \
+	clear
+	echo "Unimplemented"
 }
 
 res="$(dialog --title "bkeep" --menu "What would you like to do" 10 70 2 Add "Add a new book" Cite "Generate a citation for a book" Edit "Modify an entry" Grep "Find an entry through a regex query" List "List all books" Remove "Remove a book by ID" 3>&1 1>&2 2>&3 3>&1)"
 
 case "$res" in
-    "Add") add ;;
-    *) echo "Invalid response" ;;
+	"Add") add_entry ;;
+	"Cite") cite_entry ;;
+	"Edit") edit_entry ;;
+	"Grep") grep_entry ;;
+	"List") list_entries ;;
+	"Remove") rm_entry ;;
+	*) clear; echo "Invalid response" ;;
 esac
