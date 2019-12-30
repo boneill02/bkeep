@@ -54,5 +54,4 @@ case "$res" in
 	"Grep") grep_entry ;;
 	"List") list_entries ;;
 	"Remove") rm_entry ;;
-	*) clear; echo "Invalid response" ;;
 esac
