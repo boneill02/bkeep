@@ -22,6 +22,9 @@ edit_entry() { \
 		case "$FIELD" in
 			"Title") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new title for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
 			"Author") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new author for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
+			"Description") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new description for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
+			"ISBN") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new ISBN for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
+			"Tags") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new tags for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
 		esac
 		bkeep e "$ID" "$FIELD" "$VALUE"
 	done
