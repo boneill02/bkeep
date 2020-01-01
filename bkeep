@@ -102,7 +102,8 @@ grep_book() { \
 }
 
 list_books() { \
-	IFS=$'\n'
+	IFS='
+'
 	num='1'
 	for book in $(cat "$outfile"); do
 		print_book "$book" $num
