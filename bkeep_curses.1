@@ -1,0 +1,28 @@
+.TH "BKEEP_CURSES" "1" "December 2019" "bkeep" "User Commands"
+.SH NAME
+bkeep_curses \- dialog-based frontend for bkeep
+.SH SYNOPSIS
+.B bkeep_curses
+.SH DESCRIPTION
+.I bkeep_curses
+is a POSIX shell script for maintaining a book collection, which utilizes dialog
+to allow for a more accessible interface. It does very little with the TSV file
+that stores the collection, instead relying on the main \fIbkeep\fR command to
+perform tasks.
+.SH COPYRIGHT
+Copyright \(co 2019 Ben O'Neill <ben@benoneill.xyz>. License: GNU GPL v3+: GNU
+GPL Version 3 or later. <https://gnu.org/licenses/gpl.html>. This is free
+software: you are free to change and redistribute it. There is NO WARRANTY, to
+the extent permitted by law.
+.SH BUGS
+Input boxes when editing should have the original text in them to start with.
+This can be done with dialog I believe.
+.SH FUTURE DIRECTIONS
+None in particular as of yet.
+.SH SEE ALSO
+.BR awk (1),
+.BR bkeep (1),
+.BR dialog (1),
+.BR grep (1),
+.BR regex (7),
+.BR sed (1)
