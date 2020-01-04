@@ -11,7 +11,7 @@ clean:
 
 dist:
 	mkdir bkeep-$(VERSION)
-	cp bkeep bkeep.1 README.md LICENSE Makefile config.mk bkeep-$(VERSION)
+	cp bkeep bkeep_curses bkeep.1 README.md LICENSE Makefile config.mk bkeep-$(VERSION)
 	tar -cf bkeep-$(VERSION)
 	gzip bkeep-$(VERSION).tar
 	rm -rf bkeep-$(VERSION)
