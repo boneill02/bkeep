@@ -1,5 +1,7 @@
 #!/bin/sh
 
+out_file="$HOME/.config/library.tsv"
+
 add_entry() { \
 	TITLE="$(dialog --title "bkeep" --inputbox "Please enter the title of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
 	AUTHOR="$(dialog --title "bkeep" --inputbox "Please enter the author of the book." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
@@ -15,7 +17,9 @@ cite_entry() { \
 }
 
 edit_entry() { \
-	ID="$(dialog --title "bkeep" --inputbox "Please enter the ID of the book to edit." 10 60 3>&1 1>&2 2>&3 3>&1)" || exit
+	tmpfile="$(mktemp)"
+	nl "$out_file" | awk '{FS="\t"; print $1 " \"" $3 " - " $2 "\""}' | sed 's/^ *//' | xargs dialog --title "bkeep" --menu "What book do you want to edit?" 20 70 10 2> "$tmpfile"
+	ID="$(sed 1q "$tmpfile")"
 	editing="yes"
 	while [ $editing = "yes" ]; do
 		FIELD="$(dialog --title "bkeep" --menu "What do you want to edit?" 10 70 2 Title "" Author "" Description "" ISBN "" Tags "" 3>&1 1>&2 2>&3 3>&1)" || exit
