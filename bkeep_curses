@@ -13,17 +13,17 @@ add_entry() { \
 
 edit_entry() { \
 	tmpfile="$(mktemp)"
-	nl "$out_file" | awk '{FS="\t"; print $1 " \"" $3 " - " $2 "\""}' | sed 's/^ *//' | xargs dialog --title "bkeep" --menu "What book do you want to edit?" 20 70 10 2> "$tmpfile"
+	nl "$out_file" | awk 'BEGIN {FS="\t"}; {print $1" \"" $3 " - " $2 "\""}' | sed 's/^ *//' | xargs dialog --title "bkeep" --menu "What book do you want to edit?" 20 70 10 2> "$tmpfile"
 	ID="$(sed 1q "$tmpfile")"
 	editing="yes"
 	while [ $editing = "yes" ]; do
 		FIELD="$(dialog --title "bkeep" --menu "What do you want to edit?" 10 70 2 Title "" Author "" Description "" ISBN "" Tags "" 3>&1 1>&2 2>&3 3>&1)" || exit
 		case "$FIELD" in
-			"Title") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new title for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
-			"Author") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new author for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
-			"Description") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new description for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
-			"ISBN") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new ISBN for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
-			"Tags") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new tags for the book" 10 60 3>&1 1>&2 2>&3 3>&1)" || exit ;;
+			"Title") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new title for the book" 10 60 "$(sed -n "$ID"p "$out_file" | awk -F "\t" '{print $1}')"  3>&1 1>&2 2>&3 3>&1)" || exit ;;
+			"Author") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new author for the book" 10 60 "$(sed -n "$ID"p "$out_file" | awk -F "\t" '{print $2}')" 3>&1 1>&2 2>&3 3>&1)" || exit ;;
+			"Description") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new description for the book" 10 60 "$(sed -n "$ID"p "$out_file" | awk -F "\t" '{print $3}')" 3>&1 1>&2 2>&3 3>&1)" || exit ;;
+			"ISBN") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new ISBN for the book" 10 60 "$(sed -n "$ID"p "$out_file" | awk -F "\t" '{print $4}')" 3>&1 1>&2 2>&3 3>&1)" || exit ;;
+			"Tags") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new tags for the book" 10 60 "$(sed -n "$ID"p "$out_file" | awk -F "\t" '{print $5}')" 3>&1 1>&2 2>&3 3>&1)" || exit ;;
 		esac
 		bkeep e "$ID" "$FIELD" "$VALUE"
 	done
