@@ -6,6 +6,21 @@ import requests
 
 ns = {'loc': 'http://www.loc.gov/MARC21/slim', 'oasis': 'http://docs.oasis-open.org/ns/search-ws/sruResponse'}
 
+def isbn13to10(isbn):
+    isbn = isbn[3:len(isbn) - 1]
+    chkchr = 0
+    index = 1
+    for c in isbn:
+        chkchr += int(c) * index
+        index += 1
+    chkchr %= 11
+
+    if chkchr == 10:
+        chkchr = 'X'
+
+    isbn += str(chkchr)
+    return isbn
+
 def get_info(isbn):
     req_url = "http://lx2.loc.gov:210/LCDB?operation=searchRetrieve&query=bath.isbn=[" + isbn + "]&maximumRecords=1"
     response = requests.get(req_url).content
@@ -34,6 +49,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     isbn = args.i
     if isbn != None:
+        if len(isbn) == 13:
+            isbn = isbn13to10(isbn)
         xml_result = get_info(isbn)
         print_info(xml_result, isbn)
     else:
