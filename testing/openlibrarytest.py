@@ -21,8 +21,12 @@ def get_info(isbn):
 
 def print_info(json_result, isbn):
     title = json_result['ISBN:' + isbn]['title']
-    author = json_result['ISBN:' + isbn]['authors'][0]['name']
-    print(title + '\t' + author + '\t\t' + isbn + '\t')
+    authors = ''
+    for author in json_result['ISBN:' + isbn]['authors']:
+        authors += author['name'] + ', '
+
+    authors = authors[:len(authors) - 2]
+    print(title + '\t' + authors + '\t\t' + isbn + '\t')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
