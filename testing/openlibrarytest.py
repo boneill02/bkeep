@@ -38,6 +38,9 @@ if __name__ == '__main__':
     if isbn != None:
         if len(isbn) == 13:
             isbn = isbn13to10(isbn)
+        if len(isbn) != 10:
+            print("Invalid ISBN")
+            exit(-1)
         json_result = get_info(isbn)
         print_info(json_result, isbn)
     else:
