@@ -38,7 +38,6 @@ if __name__ == '__main__':
     if isbn != None:
         if len(isbn) == 13:
             isbn = isbn13to10(isbn)
-            print(isbn)
         json_result = get_info(isbn)
         print_info(json_result, isbn)
     else:
