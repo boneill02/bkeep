@@ -22,6 +22,9 @@ def get_info(isbn):
     return requests.get('https://openlibrary.org/api/books?bibkeys=ISBN:' + isbn + '&jscmd=data&format=json').json()
 
 def print_info(json_result, isbn):
+    if 'ISBN:' + isbn not in json_result.keys():
+        print("Record not found")
+        return
     title = json_result['ISBN:' + isbn]['title']
     authors = ''
     for author in json_result['ISBN:' + isbn]['authors']:

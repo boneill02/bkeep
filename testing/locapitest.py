@@ -29,8 +29,10 @@ def get_info(isbn):
 def print_info(root, isbn):
     title = ''
     author = ''
-
     record = root.find('oasis:records/oasis:record/oasis:recordData/loc:record', ns)
+    if record == None:
+        print("Record not found")
+        return
     for data in record.findall('loc:datafield', ns):
         if data.attrib['tag'] == '245':
             for subfield in data.findall('loc:subfield', ns):
