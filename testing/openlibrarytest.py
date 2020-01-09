@@ -8,7 +8,7 @@ def print_info(json_result, isbn):
     print(json_result)
     title = json_result['ISBN:' + isbn]['title']
     author = json_result['ISBN:' + isbn]['authors'][0]['name']
-    print(title + '\t' + author + '\t\t' + isbn)
+    print(title + '\t' + author + '\t\t' + isbn + '\t')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
