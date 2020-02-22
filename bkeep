@@ -96,7 +96,7 @@ grep_book() { \
 	else
 		grepstr="$1"
 	fi
-	booklines="$(awk -F "\t" '{OFS="\n"; print $5}' "$outfile" | grep -inw "$grepstr" | cut -d ':' -f 1)"
+	booklines="$(grep -inw "$grepstr" "$outfile" | cut -d ':' -f 1)"
 	if [ ! -z "$booklines" ]; then
 		IFS='
 '
