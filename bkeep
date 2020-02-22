@@ -96,9 +96,16 @@ grep_book() { \
 	else
 		grepstr="$1"
 	fi
-	bookline="$(awk -F "\t" '{OFS="\n"; print $5}' "$outfile" | grep -inw "$grepstr" | cut -d ':' -f 1)"
-	[ ! -z "$bookline" ] && print_book "$(sed -n "$bookline"p "$outfile")" "$bookline"
-	
+	booklines="$(awk -F "\t" '{OFS="\n"; print $5}' "$outfile" | grep -inw "$grepstr" | cut -d ':' -f 1)"
+	if [ ! -z "$booklines" ]; then
+		IFS='
+'
+		for bookline in $booklines; do
+			print_book "$(sed -n "$bookline"p "$outfile")" "$bookline"
+			echo ''
+		done
+		IFS=' '
+	fi
 }
 
 list_books() { \
