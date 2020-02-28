@@ -17,7 +17,6 @@ if [ $(echo "$ISBN" | wc -c) -eq 11 ]; then
 	fi
 elif [ $(echo "$ISBN" | wc -c) -eq 14 ]; then
 	echo "ISBN is of type ISBN-13"
-	echo "$ISBN"
 
 	equation="$(echo "$ISBN" | awk 'BEGIN {FS=""; print "("} ; {for (i = NF ; i > 0; i = i - 1) print i%2==1?"(1*" $i ")":"(3*" $i ")"}' | tr '\n' '+' | sed 's/^(+/(/;s,+$,) % 10,;s/X/10/')"
 
