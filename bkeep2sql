@@ -1,9 +1,0 @@
-#!/bin/sh
-# converts bkeep(1) entries to SQL. Output to a file.
-
-IFS='
-'
-for book in $(cat ~/.config/library.tsv); do
-	echo "INSERT INTO books(title, author, description, isbn, tags) VALUES(\"$(echo "$book" | awk -F '\t' '{print $1}')\", \"$(echo "$book" | awk -F '\t' '{print $2}')\", \"$(echo "$book" | awk -F '\t' '{print $3}')\", \"$(echo "$book" | awk -F '\t' '{print $4}')\", \"$(echo "$book" | awk -F '\t' '{print $5}')\");"
-done
-IFS=' '
