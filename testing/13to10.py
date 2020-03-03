@@ -1,6 +1,11 @@
+#!/usr/bin/env python3
+
 import sys
 
 def isbn13to10(isbn):
+    isbn = isbn.replace('-', '')
+    if len(isbn) != 13:
+        return isbn
     isbn = isbn[3:len(isbn) - 1]
     chkchr = 0
     index = 1
