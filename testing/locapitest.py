@@ -54,7 +54,7 @@ if __name__ == '__main__':
         if len(isbn) == 13:
             isbn = isbn13to10(isbn)
         if len(isbn) != 10:
-            print("Invalid ISBN")
+            print("Invalid ISBN. Try removing dashes.")
             exit(-1)
         xml_result = get_info(isbn)
         print_info(xml_result, isbn)
