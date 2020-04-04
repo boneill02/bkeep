@@ -6,7 +6,7 @@ POSIX sh.
 ## Installation
 
 1. Edit config.mk with your desired installation paths
-2. Run `make install`
+2. Run `make install` as root
 
 ## License
 
