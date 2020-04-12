@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ -z "$outfile" ] && outfile="$HOME/.config/library.tsv"
+[ -z "$outfile" ] && outfile="$HOME/.local/share/bkeep_library.tsv"
 
 bprompt() { \
 	[ -z "$1" ] || printf "$1"
