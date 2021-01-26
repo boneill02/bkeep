@@ -31,7 +31,7 @@ edit_entry() { \
 
 rm_entry() { \
 	tmpfile="$(mktemp)"
-	nl "$outfile" | awk '{FS="\t"; print $1 " \"" $3 " - " $2 "\""}' | sed 's/^ *//' | xargs dialog --title "bkeep" --menu "What book do you want to remove?" 20 70 10 2> "$tmpfile" || exit
+	nl "$outfile" | awk 'BEGIN {FS="\t"} {print $1 " \"" $3 " - " $2 "\""}' | sed 's/^ *//' | xargs dialog --title "bkeep" --menu "What book do you want to remove?" 20 70 10 2> "$tmpfile" || exit
 	ID="$(sed 1q "$tmpfile")"
 	bkeep r "$ID"
 }

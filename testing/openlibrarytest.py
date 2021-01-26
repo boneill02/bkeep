@@ -27,8 +27,9 @@ def print_info(json_result, isbn):
         return
     title = json_result['ISBN:' + isbn]['title']
     authors = ''
-    for author in json_result['ISBN:' + isbn]['authors']:
-        authors += author['name'] + ', '
+    if 'authors' in json_result['ISBN:' + isbn].keys():
+        for author in json_result['ISBN:' + isbn]['authors']:
+            authors += author['name'] + ', '
 
     authors = authors[:len(authors) - 2]
     print(title + '\t' + authors + '\t\t' + isbn + '\t')
@@ -42,7 +43,7 @@ if __name__ == '__main__':
         if len(isbn) == 13:
             isbn = isbn13to10(isbn)
         if len(isbn) != 10:
-            print("Invalid ISBN")
+            print("Invalid ISBN. Try removing dashes.")
             exit(-1)
         json_result = get_info(isbn)
         print_info(json_result, isbn)
