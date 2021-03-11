@@ -3,6 +3,11 @@
 `bkeep` is a very straightforward book management script, written and tested in
 POSIX sh.
 
+## Dependencies
+
+* An awk
+* `dialog` (for `bkeep_curses`)
+
 ## Installation
 
 1. Edit config.mk with your desired installation paths
