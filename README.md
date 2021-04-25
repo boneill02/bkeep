@@ -5,7 +5,6 @@ POSIX sh.
 
 ## Dependencies
 
-* An awk
 * `dialog` (for `bkeep_curses`)
 
 ## Installation
