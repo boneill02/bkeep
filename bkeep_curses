@@ -2,36 +2,41 @@
 
 [ -z "$outfile" ] && outfile="$HOME/.local/share/bkeep_library.tsv"
 
-add_entry() { \
-	TITLE="$(dialog --title "bkeep" --inputbox "Please enter the title of the book." 10 60 3>&1 1>&2 2>&3)" || exit
-	AUTHOR="$(dialog --title "bkeep" --inputbox "Please enter the author of the book." 10 60 3>&1 1>&2 2>&3)" || exit
-	DESCRIPTION="$(dialog --title "bkeep" --inputbox "Please enter a short description of the book." 10 60 3>&1 1>&2 2>&3)" || exit
-	ISBN="$(dialog --title "bkeep" --inputbox "Please enter the ISBN of the book." 10 60 3>&1 1>&2 2>&3)" || exit
-	TAGS="$(dialog --title "bkeep" --inputbox "Please enter some comma-separated tags for the book." 10 60 3>&1 1>&2 2>&3)" || exit
+clean_exit() {
+	clear
+	exit
+}
+
+add_entry() {
+	TITLE="$(dialog --title "bkeep" --inputbox "Please enter the title of the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
+	AUTHOR="$(dialog --title "bkeep" --inputbox "Please enter the author of the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
+	DESCRIPTION="$(dialog --title "bkeep" --inputbox "Please enter a short description of the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
+	ISBN="$(dialog --title "bkeep" --inputbox "Please enter the ISBN of the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
+	TAGS="$(dialog --title "bkeep" --inputbox "Please enter some comma-separated tags for the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
 	bkeep a "$TITLE" "$AUTHOR" "$DESCRIPTION" "$ISBN" "$TAGS"
 }
 
-edit_entry() { \
+edit_entry() {
 	tmpfile="$(mktemp)"
 	nl "$outfile" | awk 'BEGIN {FS="\t"}; {print $1" \"" $3 " - " $2 "\""}' | sed 's/^ *//' | xargs dialog --title "bkeep" --menu "What book do you want to edit?" 20 70 10 2> "$tmpfile"
 	ID="$(sed 1q "$tmpfile")"
 	editing="yes"
 	while [ $editing = "yes" ]; do
-		FIELD="$(dialog --title "bkeep" --menu "What do you want to edit?" 10 70 2 Title "" Author "" Description "" ISBN "" Tags "" 3>&1 1>&2 2>&3 3>&1)" || exit
+		FIELD="$(dialog --title "bkeep" --menu "What do you want to edit?" 10 70 2 Title "" Author "" Description "" ISBN "" Tags "" 3>&1 1>&2 2>&3 3>&1)" || clean_exit
 		case "$FIELD" in
-			"Title") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new title for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $1}')"  3>&1 1>&2 2>&3)" || exit ;;
-			"Author") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new author for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $2}')" 3>&1 1>&2 2>&3)" || exit ;;
-			"Description") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new description for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $3}')" 3>&1 1>&2 2>&3)" || exit ;;
-			"ISBN") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new ISBN for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $4}')" 3>&1 1>&2 2>&3)" || exit ;;
-			"Tags") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new tags for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $5}')" 3>&1 1>&2 2>&3)" || exit ;;
+			"Title") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new title for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $1}')"  3>&1 1>&2 2>&3)" || clean_exit ;;
+			"Author") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new author for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $2}')" 3>&1 1>&2 2>&3)" || clean_exit ;;
+			"Description") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new description for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $3}')" 3>&1 1>&2 2>&3)" || clean_exit ;;
+			"ISBN") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new ISBN for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $4}')" 3>&1 1>&2 2>&3)" || clean_exit ;;
+			"Tags") VALUE="$(dialog --title "bkeep" --inputbox "Enter the new tags for the book" 10 60 "$(sed -n "$ID"p "$outfile" | awk -F "\t" '{print $5}')" 3>&1 1>&2 2>&3)" || clean_exit ;;
 		esac
 		bkeep e "$ID" "$FIELD" "$VALUE"
 	done
 }
 
-rm_entry() { \
+rm_entry() {
 	tmpfile="$(mktemp)"
-	nl "$outfile" | awk 'BEGIN {FS="\t"} {print $1 " \"" $3 " - " $2 "\""}' | sed 's/^ *//' | xargs dialog --title "bkeep" --menu "What book do you want to remove?" 20 70 10 2> "$tmpfile" || exit
+	nl "$outfile" | awk 'BEGIN {FS="\t"} {print $1 " \"" $3 " - " $2 "\""}' | sed 's/^ *//' | xargs dialog --title "bkeep" --menu "What book do you want to remove?" 20 70 10 2> "$tmpfile" || clean_exit
 	ID="$(sed 1q "$tmpfile")"
 	bkeep r "$ID"
 }
@@ -43,3 +48,5 @@ case "$res" in
 	"Edit") edit_entry ;;
 	"Remove") rm_entry ;;
 esac
+
+clear
