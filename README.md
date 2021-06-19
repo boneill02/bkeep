@@ -15,4 +15,5 @@ POSIX sh.
 
 ## License
 
-GNU GPL v3+
+Copyright (C) 2019-2021 Ben O'Neill <ben@benoneill.xyz>. Licensed under
+the GNU GPL v3.
