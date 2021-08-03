@@ -3,7 +3,7 @@
 
 IFS='
 '
-for book in $(cat ~/.config/library.tsv); do
+for book in $(cat ~/.local/share/bkeep_library.tsv); do
 	isbn13="$(echo "$book" | awk -F '\t' '{print $4}')"
 	isbn10="$(./testing/13to10.py "$isbn13")"
 	echo "$book	$isbn10" | awk -F '\t' '{print $1 "\t" $2 "\t" $3 "\t" $6 "\t" $5}'
