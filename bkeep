@@ -140,16 +140,19 @@ rm_book() { \
 }
 
 if [ -z "$1" ]; then
-	bprompt "What do you want to do?\nAdd a book: a\nCite a book: c\nEdit a book: e\nGrep a book: g\nList books: l\nRemove a book: r\n"
-	case $input in 
-		'a') add_book ;;
-		'c') cite_book ;;
-		'e') edit_book ;;
-		'g') grep_book ;;
-		'l') list_books ;;
-		'r') rm_book ;;
-		*) echo "Unknown command" && exit 1
-	esac
+	while [ -z '' ]; do
+		bprompt "What do you want to do?\nAdd a book: a\nCite a book: c\nEdit a book: e\nGrep a book: g\nList books: l\nRemove a book: r\nQuit: q\n"
+		case $input in
+			'a') add_book ;;
+			'c') cite_book ;;
+			'e') edit_book ;;
+			'g') grep_book ;;
+			'l') list_books ;;
+			'r') rm_book ;;
+			'q') exit ;;
+			*) echo "Unknown command" && exit 1
+		esac
+	done
 else
 	case $1 in
 		'a') add_book "$2" "$3" "$4" "$5" "$6" ;;
