@@ -26,10 +26,10 @@ install:
 	sed "s/VERSION/$(VERSION)/g" < bkeep.1 > $(DESTDIR)$(MANPREFIX)/man1/bkeep.1
 	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/bkeep.1
 	sed "s/VERSION/$(VERSION)/g" < bkeep_curses.1 > $(DESTDIR)$(MANPREFIX)/man1/bkeep_curses.1
-	sed "s/VERSION/$(VERSION)/g" < bkeep_library.tsv.5 > $(DESTDIR)$(MANPREFIX)/man5/bkeep_curses.1
+	sed "s/VERSION/$(VERSION)/g" < bkeep_library.tsv.5 > $(DESTDIR)$(MANPREFIX)/man5/bkeep_library.tsv.5
 	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/bkeep_curses.1
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/bkeep $(DESTDIR)$(PREFIX)/bin/bkeep_curses $(DESTDIR)$(MANPREFIX)/man1/bkeep.1 $(DESTDIR)$(MANPREFIX)/man1/bkeep_curses.1
+	rm -f $(DESTDIR)$(PREFIX)/bin/bkeep $(DESTDIR)$(PREFIX)/bin/bkeep_curses $(DESTDIR)$(MANPREFIX)/man1/bkeep.1 $(DESTDIR)$(MANPREFIX)/man1/bkeep_curses.1 $(DESTDIR)$(MANPREFIX)/man5/bkeep_library.tsv.5
 
 .PHONY: clean dist install uninstall
