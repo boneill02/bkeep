@@ -41,13 +41,20 @@ rm_entry() {
 	bkeep r "$ID"
 }
 
+search_entry() {
+	searchstr="$(dialog --title "bkeep" --inputbox "Search for what?" 10 60 3>&1 1>&2 2>&3 || clean_exit)"
+	nl "$outfile" | grep "$searchstr" | awk 'BEGIN {FS="\t"}; {print $1" \"" $3 " - " $2 "\""}' | sed 's/^ *//' | tr -s ' ' | xargs dialog --title "bkeep" --menu "Search results" 10 70 10 3>&1 1>&2 2>&3 || clean_exit
+	clean_exit
+}
+
 while [ -z '' ]; do
-	res="$(dialog --title "bkeep" --menu "What would you like to do?" 11 70 10 Add "Add a new book" Edit "Modify an entry" Remove "Remove a book by ID" Quit "Exit to terminal" 3>&1 1>&2 2>&3)"
+	res="$(dialog --title "bkeep" --menu "What would you like to do?" 12 70 10 Add "Add a new book" Edit "Modify an entry" Remove "Remove a book by ID" Search "Search for an entry" Quit "Exit to terminal" 3>&1 1>&2 2>&3)"
 
 	case "$res" in
 		"Add") add_entry ;;
 		"Edit") edit_entry ;;
 		"Remove") rm_entry ;;
+		"Search") search_entry ;;
 		*) clean_exit ;;
 	esac
 done
