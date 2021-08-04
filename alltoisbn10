@@ -1,11 +1,19 @@
 #!/bin/sh
-# Converts all ISBN-13 numbers to ISBN-10
+# alltoisbn10: Converts all ISBN-13 numbers to ISBN-10 in a bkeep collection.
+# usage: alltoisbn10
+# author: Ben O'Neill <ben@benoneill.xyz>
+# license: GNU GPL v3+
+# repo: https://git.sr.ht/~darklands/bkeep
+
+[ -z "$BKEEPFILE" ] && BKEEPFILE="$HOME/.local/share/bkeep_library.tsv"
+
+mv $BKEEPFILE $BKEEPFILE.old
 
 IFS='
 '
-for book in $(cat ~/.local/share/bkeep_library.tsv); do
+for book in $(cat $BKEEPFILE.old); do
 	isbn13="$(echo "$book" | awk -F '\t' '{print $4}')"
 	isbn10="$(./testing/13to10.py "$isbn13")"
-	echo "$book	$isbn10" | awk -F '\t' '{print $1 "\t" $2 "\t" $3 "\t" $6 "\t" $5}'
+	echo "$book	$isbn10" | awk -F '\t' '{print $1 "\t" $2 "\t" $3 "\t" $6 "\t" $5}' >> $BKEEPFILE
 done
 IFS=' '

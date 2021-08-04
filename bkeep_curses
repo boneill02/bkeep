@@ -1,4 +1,8 @@
 #!/bin/sh
+# bkeep_curses: frontend for bkeep using dialog.
+# author: Ben O'Neill <ben@benoneill.xyz>
+# license: GNU GPL v3+
+# repo: https://git.sr.ht/~darklands/bkeep
 
 [ -z "$BKEEPFILE" ] && BKEEPFILE="$HOME/.local/share/bkeep_library.tsv"
 
