@@ -41,12 +41,15 @@ rm_entry() {
 	bkeep r "$ID"
 }
 
-res="$(dialog --title "bkeep" --menu "What would you like to do?" 10 70 10 Add "Add a new book" Edit "Modify an entry" Remove "Remove a book by ID" 3>&1 1>&2 2>&3)"
+while [ -z '' ]; do
+	res="$(dialog --title "bkeep" --menu "What would you like to do?" 11 70 10 Add "Add a new book" Edit "Modify an entry" Remove "Remove a book by ID" Quit "Exit to terminal" 3>&1 1>&2 2>&3)"
 
-case "$res" in
-	"Add") add_entry ;;
-	"Edit") edit_entry ;;
-	"Remove") rm_entry ;;
-esac
+	case "$res" in
+		"Add") add_entry ;;
+		"Edit") edit_entry ;;
+		"Remove") rm_entry ;;
+		*) clean_exit ;;
+	esac
+done
 
 clear
