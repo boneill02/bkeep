@@ -22,9 +22,11 @@ install:
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/bkeep
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/bkeep_curses
 	mkdir -p $(DESTDIR)$(MANPREFIX)/man1
+	mkdir -p $(DESTDIR)$(MANPREFIX)/man5
 	sed "s/VERSION/$(VERSION)/g" < bkeep.1 > $(DESTDIR)$(MANPREFIX)/man1/bkeep.1
 	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/bkeep.1
 	sed "s/VERSION/$(VERSION)/g" < bkeep_curses.1 > $(DESTDIR)$(MANPREFIX)/man1/bkeep_curses.1
+	sed "s/VERSION/$(VERSION)/g" < bkeep_library.tsv.5 > $(DESTDIR)$(MANPREFIX)/man5/bkeep_curses.1
 	chmod 644 $(DESTDIR)$(MANPREFIX)/man1/bkeep_curses.1
 
 uninstall:

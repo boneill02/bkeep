@@ -151,7 +151,6 @@ search_book() {
 	fi
 }
 
-
 if [ -z "$1" ]; then
 	echo "welcome to bkeep. enter \"h\" for command list"
 	while [ -z '' ]; do
