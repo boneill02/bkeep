@@ -1,4 +1,4 @@
-.TH "BKEEP" "1" "December 2019" "bkeep" "User Commands"
+.TH "BKEEP" "1" "July 2021" "bkeep" "User Commands"
 .SH NAME
 bkeep \- a simple book collection manager
 .SH SYNOPSIS
@@ -7,39 +7,33 @@ bkeep \- a simple book collection manager
 .RB [args...]
 .SH DESCRIPTION
 .I bkeep
-is a simple POSIX shell script for maintaining a collection of books. It is
-intended to be accessed through a shell prompt, and the collection is an easily
-accessible TSV file that can be put through \fIawk\fR, \fIsed\fR, and \fIgrep\fR
-with minimal hassle. This program is designed to be a wrapper for the database,
-and not the only method of controlling a book collection database; it is not
-expected that this will do everything that one might want to do, such as very
-complex queries. It is always possible to run any program on the file, and it is
-very accessible through most standard Unix programs.
+is a simple POSIX-compliant shell script for maintaining a collection of books.
+It is intended to be accessed through a shell prompt, and the collection is
+stored in an easily accessible TSV file.
 .SH COMMANDS
 .TP
 .B a [name author description isbn tags]
 Add a new book entry with either an interactive prompt (if no further options
 are supplied) or with all the given data.
 .TP
-.B c [id page]
-Cite a book by page in MLA format. NOTE: UNIMPLEMENTED.
-.TP
 .B e [id]
 Edit a book by ID.
-.TP
-.B g [regex]
-Find books using regular expressions. This currently just searches through the
-tags, each tag being a word, but this will be fixed hopefully in the future.
 .TP
 .B l
 List all available books and their information in a neatly formatted manner.
 .TP
 .B r [id]
 Remove a book by ID.
+.TP
+.B s [regex]
+Find books using regular expressions.
 .SH FILES
 .TP
 .B ~/.local/share/bkeep_library.tsv
-This file stores all the library files.
+This file stores all the library files. To use another file, set the environment
+variable
+.B $BKEEPFILE
+before running.
 .SH EXAMPLES
 .TP
 \fBbkeep a "A Tale Of Two Cities" "Charles Dickens" "A historical novel set in London and Paris before and during the French Revolution." "1503219704" "uk,france,dickens,history,classic"\fR
@@ -47,21 +41,14 @@ This command adds the book
 .I A Tale Of Two Cities
 by Charles Dickens to the database.
 .SH COPYRIGHT
-Copyright \(co 2019 Ben O'Neill <ben@benoneill.xyz>. License: GNU GPL v3+: GNU
-GPL Version 3 or later. <https://gnu.org/licenses/gpl.html>. This is free
+Copyright \(co 2019-2021 Ben O'Neill <ben@benoneill.xyz>. License: GNU GPL v3+:
+GNU GPL Version 3 or later. <https://gnu.org/licenses/gpl.html>. This is free
 software: you are free to change and redistribute it. There is NO WARRANTY, to
 the extent permitted by law.
 .SH BUGS
-Currently, ISBNs cannot be verified using the checksums. That should be changed.
-Also, citing needs to be implemented. Grepping other fields should be allowed
-rather than just grepping tags. A better command-line interface should be
-implemented.
+Let me know.
 .SH FUTURE DIRECTIONS
 In the future, sorting by certain criteria may be implemented. Better formatting
 for lists may be implemented as well.
 .SH SEE ALSO
-.BR awk (1),
-.BR bkeep_curses (1),
-.BR grep (1),
-.BR regex (7),
-.BR sed (1)
+.BR bkeep_curses (1)

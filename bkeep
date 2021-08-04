@@ -1,18 +1,18 @@
 #!/bin/sh
 
-[ -z "$outfile" ] && outfile="$HOME/.local/share/bkeep_library.tsv"
+[ -z "$BKEEPFILE" ] && BKEEPFILE="$HOME/.local/share/bkeep_library.tsv"
 
-bprompt() { \
+bprompt() {
 	[ -z "$1" ] || printf "$1"
 	printf "bkeep> "
 	read input
 }
 
-add_book() { \
-	[ ! -f "$outfile" ] && touch "$outfile"
+add_book() {
+	[ ! -f "$BKEEPFILE" ] && touch "$outfile"
 	
 	if [ ! -z "$1" ] && [ ! -z "$2" ] && [ ! -z "$3" ] && [ ! -z "$4" ] && [ ! -z "$5" ]; then
-		printf "$1\t$2\t$3\t$4\t$5\n" >> "$outfile"
+		printf "$1\t$2\t$3\t$4\t$5\n" >> "$BKEEPFILE"
 		return
 	fi
 
@@ -40,15 +40,15 @@ add_book() { \
 			([ "$input" = 'i' ] || [ "$input" = 'i' ]) && bprompt "Enter the ISBN of the book\n" && ISBN="$input"
 			([ "$input" = 'g' ] || [ "$input" = 'g' ]) && bprompt "Enter comma-separated tags for the book\n" && TAGS="$input"
 		fi
-		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && printf "$TITLE\t$AUTHOR\t$DESCRIPTION\t$ISBN\t$TAGS\n" >> "$outfile" && return
+		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && printf "$TITLE\t$AUTHOR\t$DESCRIPTION\t$ISBN\t$TAGS\n" >> "$BKEEPFILE" && return
 	done
 }
 
-cite_book() { \
+cite_book() {
 	echo "Citing is unsupported"
 }
 
-edit_book() { \
+edit_book() {
 	if [ -z "$1" ]; then
 		bprompt "Edit which book? (Enter the ID)\n"
 		ID="$input"
@@ -59,18 +59,18 @@ edit_book() { \
 			FIELD="$2"
 			VALUE="$3"
 			case "$FIELD" in
-				"Title") sed -i "$ID s/.*\t/$VALUE\t/" "$outfile" ;;
-				"Author") sed -i "$ID s/\t.*\t/\t$VALUE\t/" "$outfile" ;;
+				"Title") sed -i "$ID s/.*\t/$VALUE\t/" "$BKEEPFILE" ;;
+				"Author") sed -i "$ID s/\t.*\t/\t$VALUE\t/" "$BKEEPFILE" ;;
 			esac
 			return
 		fi
 	fi
 
-	TITLE="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $1}')"
-	AUTHOR="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $2}')"
-	DESCRIPTION="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $3}')"
-	ISBN="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $4}')"
-	TAGS="$(sed -n "$ID"p "$outfile" | awk -F '\t' '{print $5}')"
+	TITLE="$(sed -n "$ID"p "$BKEEPFILE" | awk -F '\t' '{print $1}')"
+	AUTHOR="$(sed -n "$ID"p "$BKEEPFILE" | awk -F '\t' '{print $2}')"
+	DESCRIPTION="$(sed -n "$ID"p "$BKEEPFILE" | awk -F '\t' '{print $3}')"
+	ISBN="$(sed -n "$ID"p "$BKEEPFILE" | awk -F '\t' '{print $4}')"
+	TAGS="$(sed -n "$ID"p "$BKEEPFILE" | awk -F '\t' '{print $5}')"
 
 	editing='y'
 	while [ "$editing" = 'y' ] || [ "$editing" = 'Y' ]; do
@@ -85,42 +85,31 @@ edit_book() { \
 			([ "$input" = 'i' ] || [ "$input" = 'i' ]) && bprompt "Enter the ISBN of the book\n" && ISBN="$input"
 			([ "$input" = 'g' ] || [ "$input" = 'g' ]) && bprompt "Enter comma-separated tags for the book\n" && TAGS="$input"
 		fi
-		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && sed -i "$ID c \ $TITLE\t$AUTHOR\t$DESCRIPTION\t$ISBN\t$TAGS" "$outfile" && return
+		([ "$editing" = 'n' ] || [ "$editing" = 'N' ]) && sed -i "$ID c \ $TITLE\t$AUTHOR\t$DESCRIPTION\t$ISBN\t$TAGS" "$BKEEPFILE" && return
 	done
 }
 
-grep_book() { \
-	if [ -z "$1" ]; then
-		bprompt "Grep for what?\n"
-		grepstr="$input"
-	else
-		grepstr="$1"
-	fi
-	booklines="$(grep -inw "$grepstr" "$outfile" | cut -d ':' -f 1)"
-	if [ ! -z "$booklines" ]; then
-		IFS='
-'
-		for bookline in $booklines; do
-			print_book "$(sed -n "$bookline"p "$outfile")" "$bookline"
-			echo ''
-		done
-		IFS=' '
-	fi
+help() {
+	echo "a: add a book to the list"
+	echo "e: edit a book"
+	echo "l: list all recorded books"
+	echo "r: remove a book"
+	echo "s: search for book(s)"
 }
 
-list_books() { \
+list_books() {
 	IFS='
 '
 	num='1'
-	for book in $(cat "$outfile"); do
+	for book in $(cat "$BKEEPFILE"); do
 		print_book "$book" $num
 		num="$(echo "$num+1" | bc)"
-		printf "\n\n"
+		printf "\n----------------------------------------------------\n\n"
 	done
 	IFS=' '
 }
 
-print_book() { \
+print_book() {
 	echo "ID: $2"
 	echo "Title: $(echo "$1" | awk -F '\t' '{print $1}')"
 	echo "Author(s): $(echo "$1" | awk -F '\t' '{print $2}')"
@@ -129,26 +118,48 @@ print_book() { \
 	echo "Tags: $(echo "$1" | awk -F '\t' '{print $5}')"
 }
 
-rm_book() { \
+rm_book() {
 	if [ -z "$1" ]; then
 		bprompt "Remove what book? (enter ID)\n"
 		booknum="$input"
 	else
 		booknum="$1"
 	fi
-	sed -i "$booknum"d "$outfile"
+	sed -i "$booknum"d "$BKEEPFILE"
 }
 
+search_book() {
+	if [ -z "$1" ]; then
+		bprompt "Search for what?\n"
+		searchstr="$input"
+	else
+		searchstr="$1"
+	fi
+	booklines="$(grep -inw "$searchstr" "$BKEEPFILE" | cut -d ':' -f 1)"
+	if [ ! -z "$booklines" ]; then
+		IFS='
+'
+		for bookline in $booklines; do
+			print_book "$(sed -n "$bookline"p "$BKEEPFILE")" "$bookline"
+			echo ''
+		done
+		IFS=' '
+	fi
+}
+
+
 if [ -z "$1" ]; then
+	echo "welcome to bkeep. enter \"h\" for command list"
 	while [ -z '' ]; do
-		bprompt "What do you want to do?\nAdd a book: a\nCite a book: c\nEdit a book: e\nGrep a book: g\nList books: l\nRemove a book: r\nQuit: q\n"
+		bprompt ""
 		case $input in
 			'a') add_book ;;
 			'c') cite_book ;;
 			'e') edit_book ;;
-			'g') grep_book ;;
+			'h') help ;;
 			'l') list_books ;;
 			'r') rm_book ;;
+			's') search_book ;;
 			'q') exit ;;
 			*) echo "Unknown command" && exit 1
 		esac
@@ -158,9 +169,9 @@ else
 		'a') add_book "$2" "$3" "$4" "$5" "$6" ;;
 		'c') cite_book "$2" "$3" ;;
 		'e') edit_book "$2" "$3" "$4" ;;
-		'g') grep_book "$2" ;;
 		'l') list_books ;;
 		'r') rm_book $2 ;;
+		's') search_book "$2" ;;
 		*) echo "Unknown command" && exit 1
 	esac
 fi
