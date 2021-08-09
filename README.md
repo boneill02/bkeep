@@ -1,7 +1,8 @@
 # bkeep
 
 `bkeep` is a very straightforward book management script, written and tested in
-POSIX sh.
+POSIX sh. It stores authors, titles, ISBNs, descriptions, and tags in a TSV
+file for maximum flexibility.
 
 ## Dependencies
 
