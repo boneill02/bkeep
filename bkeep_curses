@@ -12,11 +12,12 @@ clean_exit() {
 }
 
 add_entry() {
-	TITLE="$(dialog --title "bkeep" --inputbox "Please enter the title of the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
-	AUTHOR="$(dialog --title "bkeep" --inputbox "Please enter the author of the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
-	DESCRIPTION="$(dialog --title "bkeep" --inputbox "Please enter a short description of the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
-	ISBN="$(dialog --title "bkeep" --inputbox "Please enter the ISBN of the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
-	TAGS="$(dialog --title "bkeep" --inputbox "Please enter some comma-separated tags for the book." 10 60 3>&1 1>&2 2>&3)" || clean_exit
+	res="$(dialog --title "bkeep" --form "Please enter the details of the book" 10 70 5 "Title:" 1 0 "" 1 20 100 100  "Author:" 2 0 "" 2 20 100 100 "Description:" 3 0 "" 3 20 100 100 "ISBN:" 4 0 "" 4 20 100 100 "Tags:" 5 0 "" 5 20 100 100 3>&1 1>&2 2>&3)"
+	TITLE="$(echo "$res" | sed -n 1p)"
+	AUTHOR="$(echo "$res" | sed -n 2p)"
+	DESCRIPTION="$(echo "$res" | sed -n 3p)"
+	ISBN="$(echo "$res" | sed -n 4p)"
+	TAGS="$(echo "$res" | sed -n 5p)"
 	bkeep a "$TITLE" "$AUTHOR" "$DESCRIPTION" "$ISBN" "$TAGS"
 }
 
