@@ -47,10 +47,6 @@ add_book() {
 	done
 }
 
-cite_book() {
-	echo "Citing is unsupported"
-}
-
 edit_book() {
 	if [ -z "$1" ]; then
 		bprompt "Edit which book? (Enter the ID)\n"
@@ -163,7 +159,6 @@ if [ -z "$1" ]; then
 		bprompt ""
 		case $input in
 			'a') add_book ;;
-			'c') cite_book ;;
 			'e') edit_book ;;
 			'h') help ;;
 			'l') list_books ;;
@@ -177,7 +172,6 @@ if [ -z "$1" ]; then
 else
 	case $1 in
 		'a') add_book "$2" "$3" "$4" "$5" "$6" ;;
-		'c') cite_book "$2" "$3" ;;
 		'e') edit_book "$2" "$3" "$4" ;;
 		'l') list_books ;;
 		'ls') list_books simple ;;
