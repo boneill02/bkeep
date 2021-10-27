@@ -2,7 +2,7 @@
 # isbn_validate: Checks the validity of a given ISBN.
 # usage: isbn_validate isbn
 # author: Ben O'Neill <ben@benoneill.xyz>
-# license: GNU GPL v3+
+# license: MIT
 # repo: https://git.sr.ht/~darklands/bkeep
 
 [ -z "$1" ] && echo "No ISBN given" && exit

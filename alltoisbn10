@@ -2,7 +2,7 @@
 # alltoisbn10: Converts all ISBN-13 numbers to ISBN-10 in a bkeep collection.
 # usage: alltoisbn10
 # author: Ben O'Neill <ben@benoneill.xyz>
-# license: GNU GPL v3+
+# license: MIT
 # repo: https://git.sr.ht/~darklands/bkeep
 
 [ -z "$BKEEPFILE" ] && BKEEPFILE="$HOME/.local/share/bkeep_library.tsv"
