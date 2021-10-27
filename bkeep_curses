@@ -5,6 +5,7 @@
 # repo: https://git.sr.ht/~darklands/bkeep
 
 [ -z "$BKEEPFILE" ] && BKEEPFILE="$HOME/.local/share/bkeep_library.tsv"
+touch $BKEEPFILE
 
 clean_exit() {
 	clear
